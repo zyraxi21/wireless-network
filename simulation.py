@@ -14,6 +14,7 @@ def create_network():
 
 
 def simulate(network, changes, start, end):
+    """模拟拓扑事件并记录最短路径变化。"""
     shortest_path = find_shortest_path(
         network, start, end
     )  # 将初始路径记录到变量中，避免求跳数时再次运行 BFS
