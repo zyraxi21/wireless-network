@@ -1,5 +1,5 @@
 from topology import connect, disconnect
-from routing import find_shortest_path
+from routing import find_shortest_path, find_path_dfs
 from simulation import simulate
 import pytest
 
@@ -215,3 +215,21 @@ def test_invalid_event():
 # assert network6["D"].count("F") == 1
 # assert network6["F"].count("D") == 1
 # assert find_shortest_path(network6, "A", "F") == ["A", "B", "D", "F"]
+
+def test_path_dfs():
+    """测试正常可达、不可达和起终点相同的情况。"""
+    # 测试正常可达
+    network = create_network()
+    assert find_path_dfs(network, "A", "E") == ["A", "B", "D", "E"]
+
+    # 测试不可达节点
+    network4 = create_network()
+    assert find_path_dfs(network4, "A", "F") is None
+
+    # 测试起终点相同
+    network3 = create_network()
+    assert find_path_dfs(network3, "A", "A") == ["A"]
+
+    # 测试不存在的节点
+    with pytest.raises(ValueError, match="节点不存在"):
+        find_path_dfs(network, "A", "G")
