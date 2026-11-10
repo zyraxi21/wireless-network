@@ -233,3 +233,15 @@ def test_path_dfs():
     # 测试不存在的节点
     with pytest.raises(ValueError, match="节点不存在"):
         find_path_dfs(network, "A", "G")
+
+def test_dfs_backtracking():
+    """测试 DFS 算法是否正确回溯"""
+    network = {
+        "A": ["B", "C"],
+        "B": ["A", "D"],
+        "C": ["A", "E"],
+        "D": ["B"],
+        "E": ["C"]
+    }
+
+    assert find_path_dfs(network, "A", "E") == ["A", "C", "E"]
