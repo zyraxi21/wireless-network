@@ -5,20 +5,7 @@ import pytest
 
 
 def create_network():
-    """创建一个新的网络拓扑。
-
-    Args:
-        无参数。
-
-    Returns:
-        输出一个字典，包含数个网络节点和它们间的连接关系。
-
-    Raises:
-        无。
-
-    Example:
-        >>> network = create_network()
-    """
+    """创建一个新的网络拓扑"""
     return {
         "A": ["B", "C"],
         "B": ["A", "D"],
@@ -30,21 +17,7 @@ def create_network():
 
 
 def test_connect_new_link():
-    """测试新连接能否正常建立。
-
-    Args:
-        无参数。
-
-    Returns:
-        无输出。
-
-    Raises:
-        AssertionError: 未添加邻居节点时抛出。
-
-    Example:
-        >>> test_connect_new_link()
-        AssertionError
-    """
+    """测试新连接能否正常建立"""
     network = create_network()
 
     connect(network, "A", "F")
@@ -55,21 +28,7 @@ def test_connect_new_link():
 
 
 def test_duplicate_connection():
-    """测试重复建立相同链路，不会产生重复邻居。
-
-    Args:
-        无参数。
-
-    Returns:
-        无输出。
-
-    Raises:
-        AssertionError: 未添加或重复添加邻居节点时抛出。
-
-    Example:
-        >>> test_duplicate_connection()
-        AssertionError
-    """
+    """测试重复建立相同链路，不会产生重复邻居"""
     network = create_network()
 
     connect(network, "A", "B")
@@ -79,21 +38,7 @@ def test_duplicate_connection():
 
 
 def test_disconnect_twice():
-    """测试连续断开两次相同链路，不会报错。
-
-    Args:
-        无参数。
-
-    Returns:
-        无输出。
-
-    Raises:
-        AssertionError: 断开已无连接的节点时抛出。
-
-    Example:
-        >>> test_disconnect_twice()
-        AssertionError
-    """
+    """测试连续断开两次相同链路，不会报错"""
     network2 = create_network()
     disconnect(network2, "A", "B")
     disconnect(network2, "A", "B")
@@ -102,21 +47,7 @@ def test_disconnect_twice():
 
 
 def test_shortest_path():
-    """测试正常可达、不可达和起终点相同的情况。
-
-    Args:
-        无参数。
-
-    Returns:
-        无输出。
-
-    Raises:
-        AssertionError: BFS 函数找到的最短路径不正确时抛出。
-
-    Example:
-        >>> test_shortest_path()
-        AssertionError
-    """
+    """测试正常可达、不可达和起终点相同的情况"""
     # 测试正常可达
     network = create_network()
     assert find_shortest_path(network, "A", "E") == ["A", "B", "D", "E"]
@@ -131,21 +62,7 @@ def test_shortest_path():
 
 
 def test_simulation():
-    """验证四次网络事件发生后的完整 history。
-
-    Args:
-        无参数。
-
-    Returns:
-        无输出。
-
-    Raises:
-        AssertionError: 四次网络事件发生后返回的 history 不正确时抛出。
-
-    Example:
-        >>> test_simulation()
-        AssertionError
-    """
+    """验证四次网络事件发生后的完整 history"""
     changes = [
         ("disconnect", "B", "D"),
         ("disconnect", "D", "E"),
@@ -183,38 +100,10 @@ def test_simulation():
 
 
 def test_invalid_event():
-    """验证遇到 "shutdown" 这样的未知事件时，会抛出 ValueError。
-
-    Args:
-        无参数。
-
-    Returns:
-        无输出。
-
-    Raises:
-        ValueError: 事件列表中有未知事件时抛出。
-
-    Example:
-        >>> test_invalid_event()
-        ValueError
-    """
+    """验证遇到 "shutdown" 这样的未知事件时，会抛出 ValueError"""
     with pytest.raises(ValueError, match="未知事件类型"):
         simulate(create_network(), [("shutdown", "E", "F")], "A", "E")
 
-
-# # 测试断开某条链路后，能否找到替代路径。
-# network5 = create_network()
-# assert find_shortest_path(network5, "A", "D") == ["A", "B", "D"]
-# disconnect(network5, "A", "B")
-# assert find_shortest_path(network5, "A", "D") == ["A", "C", "D"]
-
-# # 测试建立 D—F 后能否找到 A 到 F 的最短路径
-# network6 = create_network()
-# connect(network6, "D", "F")
-
-# assert network6["D"].count("F") == 1
-# assert network6["F"].count("D") == 1
-# assert find_shortest_path(network6, "A", "F") == ["A", "B", "D", "F"]
 
 def test_path_dfs():
     """测试正常可达、不可达和起终点相同的情况。"""
@@ -234,6 +123,7 @@ def test_path_dfs():
     with pytest.raises(ValueError, match="节点不存在"):
         find_path_dfs(network, "A", "G")
 
+
 def test_dfs_backtracking():
     """测试 DFS 算法是否正确回溯"""
     network = {
@@ -241,7 +131,22 @@ def test_dfs_backtracking():
         "B": ["A", "D"],
         "C": ["A", "E"],
         "D": ["B"],
-        "E": ["C"]
+        "E": ["C"],
     }
 
     assert find_path_dfs(network, "A", "E") == ["A", "C", "E"]
+
+
+# # 测试断开某条链路后，能否找到替代路径。
+# network5 = create_network()
+# assert find_shortest_path(network5, "A", "D") == ["A", "B", "D"]
+# disconnect(network5, "A", "B")
+# assert find_shortest_path(network5, "A", "D") == ["A", "C", "D"]
+
+# # 测试建立 D—F 后能否找到 A 到 F 的最短路径
+# network6 = create_network()
+# connect(network6, "D", "F")
+
+# assert network6["D"].count("F") == 1
+# assert network6["F"].count("D") == 1
+# assert find_shortest_path(network6, "A", "F") == ["A", "B", "D", "F"]

@@ -44,13 +44,14 @@ def get_hop_counts(network, start):
                 visited.add(neighbor)
     return distance
 
+
 def find_path_dfs(network, start, end):
     if start not in network or end not in network:
         raise ValueError("节点不存在")
 
     if start == end:
         return [start]
-    
+
     path = [start]
     visited = {start}
 
@@ -62,11 +63,11 @@ def find_path_dfs(network, start, end):
                 visited.add(neighbor)
                 exist = True
                 break
-        
+
         if not exist:
             path.pop()
-        
+
     if not path:
         return None
-    
+
     return path
